@@ -22,7 +22,7 @@
 }
 #user_options .option_buttons {
     display:block;
-    float:right;
+    /* float:right; */
     height:175px;width:175px;
     margin-top:20px;
     outline:none;

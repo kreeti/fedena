@@ -18,7 +18,7 @@
 
 class CoursesController < ApplicationController
   before_filter :login_required
-  before_filter :find_course, :only => [:show, :edit, :update, :destroy]
+  before_filter :find_course, :only => [ :edit, :update, :destroy ]
   filter_access_to :all
   
   def index

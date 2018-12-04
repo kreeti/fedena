@@ -43,8 +43,8 @@ class EventController < ApplicationController
         #        redirect_to :action=>"show", :id=>@events.id
         #      end
       else
-        @start_date = params[:events][:start_date].to_date
-        @end_date = params[:events][:end_date].to_date
+        @start_date = params[:events][:start_date]
+        @end_date = params[:events][:end_date]
       end
     end
   end
@@ -84,7 +84,7 @@ class EventController < ApplicationController
       end
     end
 
-    flash[:notice] = "#{t('flash1')}"
+    flash[:notice] = "#{t('event.flash1')}"
     redirect_to :action=>"show", :id => event.id
   end
 
@@ -121,7 +121,7 @@ class EventController < ApplicationController
         end
       end
     end
-    flash[:notice] = "#{t('flash2')}"
+    flash[:notice] = "#{t('event.flash2')}"
     redirect_to :action=>"show", :id=>event.id
   end
 
@@ -258,7 +258,7 @@ class EventController < ApplicationController
     
     batch_event.each { |x| x.destroy } unless batch_event.nil?
     dept_event.each { |x| x.destroy } unless dept_event.nil?
-    flash[:notice] ="#{t('flash3')}"
+    flash[:notice] ="#{t('event.flash3')}"
     redirect_to :action=>"index"
   end
 

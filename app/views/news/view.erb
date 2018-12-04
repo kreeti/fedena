@@ -55,20 +55,21 @@
   <% end %>
 
   <h3 id="comments-heading"><%= t('comments') %></h3>
-
-  
-      <span id="comments-count"><% if @comments.empty? %><%= t('no_comments') %><% end %></span>
-    
+  <span id="comments-count">
+    <% if @comments.empty? %>
+      <%= t('no_comments') %>
+    <% end %>
+  </span>
 
   <ul id="comments-list">
-    <% @comments.each do |@cmnt| %>
-      <%= render :partial => "comment" %>
+    <% @comments.each do |cmnt| %>
+      <%= render :partial => "comment", :locals => {cmnt: cmnt} %>
     <% end %>
   </ul>
 
   <h4 id="leave-a-comment"><%= t('leave_comment') %></h4>
 
-  <% form_remote_for :comment, :id => 'comments-form', :url => { :action => 'add_comment' } do |f| %>
+  <%= form_for :comment, :id => 'comments-form', :url => { :action => 'add_comment' }, :remote => true do |f| %>
   <div class="comment-content"> <%= f.text_area :content %> </div>
     <%= f.hidden_field :news_id, :value => @news.id %>
     <div id="submit-button"><%= submit_tag '', :value =>"► #{t('submit')}" %></div>

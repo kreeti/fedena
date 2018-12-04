@@ -69,7 +69,7 @@ class User < ActiveRecord::Base
 
   def self.authenticate?(username, password)
     u = User.find_by_username username
-    u.hashed_password == Digest::SHA1.hexdigest(u.salt + password)
+    # u.hashed_password == Digest::SHA1.hexdigest(u.salt + password)
   end
 
   def random_string(len)
@@ -81,9 +81,9 @@ class User < ActiveRecord::Base
 
   def role_name
     return "#{I18n.t('admin')}" if self.admin?
-    return "#{t('student_text')}" if self.student?
-    return "#{t('employee_text')}" if self.employee?
-    return "#{t('parent')}" if self.parent?
+    return "#{I18n.t('student_text')}" if self.student?
+    return "#{I18n.t('employee_text')}" if self.employee?
+    return "#{I18n.t('parent')}" if self.parent?
     return nil
   end
 

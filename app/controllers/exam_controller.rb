@@ -223,7 +223,7 @@ class ExamController < ApplicationController
         end
       end
       if @batches
-        @batches.each do|batch|
+        @batches.each do |batch|
           batch.job_type = "1"
           Delayed::Job.enqueue(batch)
         end
@@ -520,7 +520,7 @@ class ExamController < ApplicationController
     @batches = Batch.all(:conditions=>{:course_id=>@courses,:is_deleted=>false,:is_active=>true})
     @students = Student.find_all_by_batch_id(@batches)
     @grouped_exams = GroupedExam.find_all_by_batch_id(@batches)
-    @sort_order=""
+    @sort_order = ""
     unless !params[:sort_order].present?
       @sort_order=params[:sort_order]
     end

@@ -21,6 +21,9 @@ class RankingLevelsController < ApplicationController
   before_filter :login_required
   filter_access_to :all
 
+  def show
+  end
+
   def index
     #@courses = Course.active
     #@ranking_levels = RankingLevel.all(:order=> "priority ASC")

@@ -30,9 +30,8 @@
 
   <% unless flash[:notice].nil? %> <p class="flash-msg"> <%= flash[:notice] %> </p> <% end %>
 
-  <% form_for :news do |f| %>
+  <%= form_for :news do |f| %>
 
-    <%= error_messages_for :news %>
 
     <div id="add_news_form">
       <div class="news_label_field">
@@ -42,7 +41,7 @@
 
       <div class="news_label_field">
         <label for="news_content"><%= t('content') %></label>
-        <div id="news_content_text_field_bg"><%= fckeditor_textarea :news, :content,:lang => I18n.locale,:langdir => (rtl? ? 'rtl' : 'ltr') %></div>
+        <div id="news_content_text_field_bg"><%= f.text_area :content, :cols=> 75, :rows=>15 %></div>
       </div>
     </div>
 

@@ -46,9 +46,11 @@
       <p class="flash-msg"> <%= flash[:notice] %> </p>
     <% end %>
 
-    <%- form_for :bank_field do |c| -%>
+    <%= form_for :bank_field do |c| -%>
 
-      <%= error_messages_for 'bank_field' %>
+      <% @bank_field.errors.full_messages.each do |msg| %>
+        <%= msg %>
+      <% end %>
       <div id="form-content">
         <div class="label-field-pair">
           <label for="category_name"><%= t('name') %></label>
@@ -67,7 +69,7 @@
         </div>
 
         <div id="submit-button">
-          <%=submit_tag("► #{t('create_text')}") %>
+          <%= submit_tag("► #{t('create_text')}") %>
         </div>
       </div>
 

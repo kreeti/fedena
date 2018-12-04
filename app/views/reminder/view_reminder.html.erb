@@ -47,14 +47,10 @@
     <div id="reminder-message"><strong><%= t('message') %>:</strong><br /><br /><%=h @new_reminder.body %></div>
     <div id="reminder-reply">
 
-      <%= link_to_function "►#{t('reply')}", :class=>'button user_button' do |page|
-        page.visual_effect :toggle_blind, "reply-form"
-      end  unless @sender.nil? %>
-      
+      <%= link_to_function "►#{t('reply')}", "document.getElementById('reply-form').style='block'" %>
     </div>
     <div id="reply-form" style="display:none;">
-      <% form_for :reminder, :url=>{:id2 =>@new_reminder.id}  do |l| %>
-        <%= error_messages_for :reminder %>
+      <%= form_for :reminder, :url=>{:id2 =>@new_reminder.id}  do |l| %>
         <div class="message">
           <div class="label-field-pair">
             <label for="subject"><%= t('subject') %></label>
@@ -66,8 +62,8 @@
           </div>
           <div class="extender"></div>
           <div id="submit-button">
-          <%=submit_tag "► #{t('send')}", :class=> 'button' %>
-        </div>
+            <%=submit_tag "► #{t('send')}", :class=> 'button' %>
+          </div>
         </div>
         
       <% end %>

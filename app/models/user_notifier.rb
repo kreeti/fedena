@@ -31,7 +31,7 @@ class UserNotifier < ActionMailer::Base
       @from        = admin_email
       @subject     = " "
       @sent_on     = Time.now
-      @body[:user] = user
+      @body = user
     end
 
     def get_domain(current_url)

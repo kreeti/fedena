@@ -46,9 +46,11 @@
       <p class="flash-msg"> <%= flash[:notice] %> </p>
     <% end %>
 
-    <%- form_for @additional_field, :url=>{:action=>(@additional_field.new_record? ? "add_additional_details" : "edit_additional_details")} do |c| -%>
+    <%= form_for @additional_field, :url=>{:action=>(@additional_field.new_record? ? "add_additional_details" : "edit_additional_details")} do |c| %>
 
-      <%= error_messages_for 'additional_field' %>
+      <% @additional_field.errors.full_messages.each do |msg| %>
+        <%= msg %>
+      <% end %>
       <div id="form-content">
         <div class="label-field-pair">
           <label for="category_name"><%= t('name') %></label>
@@ -76,7 +78,7 @@
         </div>
         <div class="custom" style="display: none" >
           <% c.fields_for :additional_field_options do |builder| %>
-            <%= render "additional_field_option_fields" ,:c=>builder%>
+            <%= render "additional_field_option_fields" ,:c => builder %>
           <% end %>
           <div>
             <%= link_to_add_fields t('add'), c, :additional_field_options  %>
@@ -115,7 +117,6 @@
 
 
   function remove_fields(link){
-    //    console.log($(link).previous("input[type=hidden]"));
     $(link).previous("input[type=hidden]").value='1';
     $(link).up(".fields").hide();
   }
@@ -133,6 +134,7 @@
     }
     return true;
   }
+
   document.observe("dom:loaded", function() {
     if ($$('.input-type-select')!=""){
       $$('.input-type-select').invoke('observe','change',toggle_custom);

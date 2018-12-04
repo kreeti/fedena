@@ -21,7 +21,7 @@ class CceReportsController < ApplicationController
   #  before_filter :load_cce_report, :only=>[:show_student_wise_report]
   filter_access_to :all 
   #  filter_access_to :show_student_wise_report, :attribute_check => true
-    
+
   def index
     
   end

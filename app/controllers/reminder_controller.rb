@@ -23,14 +23,15 @@ class ReminderController < ApplicationController
 
   def index
     @user = current_user
-    @reminders = Reminder.paginate(:page => params[:page], :conditions=>["recipient = '#{@user.id}' and is_deleted_by_recipient = false"], :order=>"created_at DESC",:include=>:user)
+    # @reminders = Reminder.paginate(:page => params[:page], :conditions=>["recipient = '#{@user.id}' and is_deleted_by_recipient = false"], :order=>"created_at DESC",:include=>:user)
+    @reminders = Reminder.includes(:user).where("recipient = '#{@user.id}' and is_deleted_by_recipient = false").paginate(:page => params[:page]).order("created_at DESC")
     @read_reminders = Reminder.find_all_by_recipient(@user.id, :conditions=>"is_read = true and is_deleted_by_recipient = false", :order=>"created_at DESC")
     @new_reminder_count = Reminder.find_all_by_recipient(@user.id, :conditions=>"is_read = false and is_deleted_by_recipient = false")
   end
 
   def create_reminder
     @user = current_user
-    @departments = EmployeeDepartment.find(:all)
+    @departments = Hr::EmployeeDepartment.find(:all)
     @new_reminder_count = Reminder.find_all_by_recipient(@user.id, :conditions=>"is_read = false")
     unless params[:send_to].nil?
       recipients_array = params[:send_to].split(",").collect{ |s| s.to_i }
@@ -118,8 +119,8 @@ class ReminderController < ApplicationController
 
   def sent_reminder
     @user = current_user
-    @sent_reminders = Reminder.paginate(:page => params[:page], :conditions=>["sender = '#{@user.id}' and is_deleted_by_sender = false"],  :order=>"created_at DESC")
-    @new_reminder_count = Reminder.find_all_by_recipient(@user.id, :conditions=>"is_read = false")
+    @sent_reminders = Reminder.where("sender = '#{@user.id}' and is_deleted_by_sender = false").paginate(:page => params[:page]).order("created_at DESC")
+    @new_reminder_count = Reminder.where("is_read = false").find_all_by_recipient(@user.id)
   end
 
   def view_sent_reminder
@@ -207,8 +208,8 @@ class ReminderController < ApplicationController
         end
       end
     end
-    @reminders = Reminder.paginate(:page => params[:page], :conditions=>["recipient = '#{@user.id}' and is_deleted_by_recipient = false"], :order=>"created_at DESC")
-    @new_reminder_count = Reminder.find_all_by_recipient(@user.id, :conditions=>"is_read = false and is_deleted_by_recipient = false")
+    @reminders = Reminder.where("recipient = '#{@user.id}' and is_deleted_by_recipient = false").paginate(:page => params[:page]).order("created_at DESC")
+    @new_reminder_count = Reminder.where("is_read = false and is_deleted_by_recipient = false").find_all_by_recipient(@user.id)
 
     redirect_to :action=>:index, :page=>params[:page]
   end

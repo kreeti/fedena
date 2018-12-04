@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gem 'rails', '3.2.22.4'
 
-gem 'mysql', '2.9.1'
+gem 'mysql2', '~> 0.3.10'
 gem 'rake', '<11'
 gem 'nokogiri', '1.6.0'
 
@@ -17,6 +17,9 @@ gem 'wicked_pdf', '0.7.0'
 gem 'declarative_authorization'
 
 gem 'jquery-rails'
+gem 'jquery-ui-rails'
+
+gem 'prototype-rails'
 
 # Bundle gems for the local environment. Make sure to
 # put test-only gems in this group so their generators
@@ -32,4 +35,5 @@ end
 
 group :development do
   gem 'rb-readline'
+  gem 'pry-rails'
 end

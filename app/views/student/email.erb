@@ -44,8 +44,10 @@
     <p class="flash-msg"> <%= flash[:notice] %> </p>
   <% end %>
 
-  <% form_for :email do |f| %>
-    <%= error_messages_for 'student', :header_message => nil %>
+  <%= form_for :email do |f| %>
+    <% @student.errors.full_messages.each do |msg| %>
+      <p><%= msg %></p>
+    <% end %>
 
     <div class="label-field-pair">
       <label for="email_subject"><%= t('subject') %></label>

@@ -67,7 +67,7 @@
       </div>
 
 
-      <%= observe_fields ['employee_reporting_manager_id'],
+      <%= observe_field ['employee_reporting_manager_id'],
         :frequency => 0.1,
         :update => 'changed-manager-name',
         :url=> {:action=>'update_reporting_manager_name'} %>

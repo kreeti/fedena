@@ -62,15 +62,15 @@
   <script type="text/javascript">
     function search_user_ajax(){
       if ($('query').value.include("%")) return;
-<%="#{button_to(:url => {:action => "search_user_ajax"},
+'<%="#{button_to(:url => {:action => "search_user_ajax"},
 :with =>  "'query='+ $('query').value",
 :before => "Element.show('loader')",
 :success => "Element.hide('loader')",
 :update=>"user_information"
-)}"%>
+)}"%>'
   }
 
-  document.observe("dom:loaded", function() {
+  $(document).ready("dom:loaded", function() {
     new Form.Element.Observer('query', 1, search_user_ajax);
   });
 

@@ -48,9 +48,11 @@
       <p class="flash-msg"> <%= flash[:notice] %> </p>
     <% end %>
 
-    <%- form_for :category do |c| -%>
+    <%= form_for :category do |c| -%>
 
-      <%= error_messages_for 'category' %>
+      <% @category.errors.full_messages.each do |msg| %>
+        <%= msg %>
+      <% end %>
       <div id="form-content">
         <div class="label-field-pair">
           <label for="category_name"><%= t('name') %></label>

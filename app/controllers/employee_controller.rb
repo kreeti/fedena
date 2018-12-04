@@ -24,11 +24,11 @@ class EmployeeController < ApplicationController
   before_filter :limit_employee_profile_access , :only => [:profile,:profile_pdf]
 
   def add_category
-    @categories = EmployeeCategory.find(:all,:order => "name asc",:conditions=>'status = 1')
-    @inactive_categories = EmployeeCategory.find(:all,:conditions=>'status = 0')
-    @category = EmployeeCategory.new(params[:category])
+    @categories = Hr::EmployeeCategory.find(:all,:order => "name asc",:conditions=>'status = 1')
+    @inactive_categories = Hr::EmployeeCategory.find(:all,:conditions=>'status = 0')
+    @category = Hr::EmployeeCategory.new(params[:category])
     if request.post? and @category.save
-      flash[:notice] = t('flash1')
+      flash[:notice] = t('employee.flash1')
       redirect_to :controller => "employee", :action => "add_category"
     end
   end
@@ -57,171 +57,173 @@ class EmployeeController < ApplicationController
   end
 
   def delete_category
-    employees = Employee.find(:all ,:conditions=>"employee_category_id = #{params[:id]}")
+    employees = Hr::Employee.find(:all ,:conditions=>"employee_category_id = #{params[:id]}")
     if employees.empty?
-      employees = ArchivedEmployee.find(:all ,:conditions=>"employee_category_id = #{params[:id]}")
+      employees = Hr::ArchivedEmployee.find(:all ,:conditions=>"employee_category_id = #{params[:id]}")
     end
-    category_position = EmployeePosition.find(:all, :conditions=>"employee_category_id = #{params[:id]}")
+    category_position = Hr::EmployeePosition.find(:all, :conditions=>"employee_category_id = #{params[:id]}")
     if employees.empty? and category_position.empty?
-      EmployeeCategory.find(params[:id]).destroy
-      @categories = EmployeeCategory.find :all
-      flash[:notice]=t('flash3')
+      Hr::EmployeeCategory.find(params[:id]).destroy
+      @categories = Hr::EmployeeCategory.find :all
+      flash[:notice]=t('employee.flash3')
       redirect_to :action => "add_category"
     else
-      flash[:warn_notice]=t('flash4')
+      flash[:warn_notice]=t('employee.flash4')
       redirect_to :action => "add_category"
     end
   end
 
   def add_position
-    @positions = EmployeePosition.find(:all,:order => "name asc",:conditions=>'status = 1')
-    @inactive_positions = EmployeePosition.find(:all,:order => "name asc",:conditions=>'status = 0')
-    @categories = EmployeeCategory.find(:all,:order => "name asc",:conditions=> 'status = 1')
-    @position = EmployeePosition.new(params[:position])
+    @positions = Hr::EmployeePosition.find(:all,:order => "name asc",:conditions=>'status = 1')
+    @inactive_positions = Hr::EmployeePosition.find(:all,:order => "name asc",:conditions=>'status = 0')
+    @categories = Hr::EmployeeCategory.find(:all,:order => "name asc",:conditions=> 'status = 1')
+    @position = Hr::EmployeePosition.new(params[:position])
     if request.post? and @position.save
-      flash[:notice] = t('flash5')
+      flash[:notice] = t('employee.flash5')
       redirect_to :controller => "employee", :action => "add_position"
     end
   end
 
   def edit_position
-    @categories = EmployeeCategory.find(:all)
-    @position = EmployeePosition.find(params[:id])
-    employees = Employee.find(:all ,:conditions=>"employee_position_id = #{params[:id]}")
+    @categories = Hr::EmployeeCategory.find(:all)
+    @position = Hr::EmployeePosition.find(params[:id])
+    employees = Hr::Employee.find(:all ,:conditions=>"employee_position_id = #{params[:id]}")
     if request.post?
       if (params[:position][:status] == 'false' and employees.blank?) or params[:position][:status] == 'true'
         if @position.update_attributes(params[:position])
-          flash[:notice] = t('flash6')
+          flash[:notice] = t('employee.flash6')
           redirect_to :action => "add_position"
+        else
+          flash[:warn_notice] = "#{t('employee.flash38')}"
         end
       end
-      flash[:warn_notice] = "<p>#{t('flash38')}</p>"
     end
-
   end
 
   def delete_position
-    employees = Employee.find(:all ,:conditions=>"employee_position_id = #{params[:id]}")
+    employees = Hr::Employee.find(:all ,:conditions=>"employee_position_id = #{params[:id]}")
     if employees.empty?
-      employees = ArchivedEmployee.find(:all ,:conditions=>"employee_position_id = #{params[:id]}")
+      employees = Hr::ArchivedEmployee.find(:all ,:conditions=>"employee_position_id = #{params[:id]}")
     end
     if employees.empty?
-      EmployeePosition.find(params[:id]).destroy
-      @positions = EmployeePosition.find :all
-      flash[:notice]=t('flash3')
+      Hr::EmployeePosition.find(params[:id]).destroy
+      @positions = Hr::EmployeePosition.find :all
+      flash[:notice]=t('employee.flash3')
       redirect_to :action => "add_position"
     else
-      flash[:warn_notice]=t('flash4')
+      flash[:warn_notice]=t('employee.flash4')
       redirect_to :action => "add_position"
     end
   end
 
   def add_department
-    @departments = EmployeeDepartment.find(:all,:order => "name asc",:conditions=>'status = 1')
-    @inactive_departments = EmployeeDepartment.find(:all,:order => "name asc",:conditions=>'status = 0')
-    @department = EmployeeDepartment.new(params[:department])
+    @departments = Hr::EmployeeDepartment.find(:all,:order => "name asc",:conditions=>'status = 1')
+    @inactive_departments = Hr::EmployeeDepartment.find(:all,:order => "name asc",:conditions=>'status = 0')
+    @department = Hr::EmployeeDepartment.new(params[:department])
     if request.post? and @department.save
-      flash[:notice] =  t('flash7')
+      flash[:notice] =  t('employee.flash7')
       redirect_to :controller => "employee", :action => "add_department"
     end
   end
 
   def edit_department
-    @department = EmployeeDepartment.find(params[:id])
-    employees = Employee.find(:all ,:conditions=>"employee_department_id = #{params[:id]}")
+    @department = Hr::EmployeeDepartment.find(params[:id])
+    employees = Hr::Employee.find(:all ,:conditions=>"employee_department_id = #{params[:id]}")
     if request.post?
       if (params[:department][:status] == 'false' and employees.blank?) or params[:department][:status] == 'true'
         if @department.update_attributes(params[:department])
-          flash[:notice] = t('flash8')
+          flash[:notice] = t('employee.flash8')
           redirect_to :action => "add_department"
+        else
+          flash[:warn_notice] = "#{t('employee.flash39')}"
         end
       end
-      flash[:warn_notice] = "<p>#{t('flash39')}</p>"
     end
   end
 
   def delete_department
-    employees = Employee.find(:all ,:conditions=>"employee_department_id = #{params[:id]}")
+    employees = Hr::Employee.find(:all ,:conditions=>"employee_department_id = #{params[:id]}")
     if employees.empty?
-      employees = ArchivedEmployee.find(:all ,:conditions=>"employee_department_id = #{params[:id]}")
+      employees = Hr::ArchivedEmployee.find(:all ,:conditions=>"employee_department_id = #{params[:id]}")
     end
     if employees.empty?
-      EmployeeDepartment.find(params[:id]).destroy
-      @departments = EmployeeDepartment.find :all
-      flash[:notice]=t('flash3')
+      Hr::EmployeeDepartment.find(params[:id]).destroy
+      @departments = Hr::EmployeeDepartment.find :all
+      flash[:notice]=t('employee.flash3')
       redirect_to :action => "add_department"
     else
-      flash[:warn_notice]=t('flash4')
+      flash[:warn_notice]=t('employee.flash4')
       redirect_to :action => "add_department"
     end
   end
 
   def add_grade
-    @grades = EmployeeGrade.find(:all,:order => "name asc",:conditions=>'status = 1')
-    @inactive_grades = EmployeeGrade.find(:all,:order => "name asc",:conditions=>'status = 0')
-    @grade = EmployeeGrade.new(params[:grade])
+    @grades = Hr::EmployeeGrade.find(:all,:order => "name asc",:conditions=>'status = 1')
+    @inactive_grades = Hr::EmployeeGrade.find(:all,:order => "name asc",:conditions=>'status = 0')
+    @grade = Hr::EmployeeGrade.new(params[:grade])
     if request.post? and @grade.save
-      flash[:notice] =  t('flash9')
+      flash[:notice] =  t('employee.flash9')
       redirect_to :controller => "employee", :action => "add_grade"
     end
   end
 
   def edit_grade
-    @grade = EmployeeGrade.find(params[:id])
-    employees = Employee.find(:all ,:conditions=>"employee_grade_id = #{params[:id]}")
+    @grade = Hr::EmployeeGrade.find(params[:id])
+    employees = Hr::Employee.find(:all ,:conditions=>"employee_grade_id = #{params[:id]}")
     if request.post?
       if (params[:grade][:status] == 'false' and employees.blank?) or params[:grade][:status] == 'true'
         if @grade.update_attributes(params[:grade])
-          flash[:notice] = t('flash10')
+          flash[:notice] = t('employee.flash10')
           redirect_to :action => "add_grade"
+        else
+          flash[:warn_notice] = "#{t('employee.flash40')}"
         end
       end
-      flash[:warn_notice] = "<p>#{t('flash40')}</p>"
     end
   end
 
   def delete_grade
-    employees = Employee.find(:all ,:conditions=>"employee_grade_id = #{params[:id]}")
+    employees = Hr::Employee.find(:all ,:conditions=>"employee_grade_id = #{params[:id]}")
     if employees.empty?
-      employees = ArchivedEmployee.find(:all ,:conditions=>"employee_grade_id = #{params[:id]}")
+      employees = Hr::ArchivedEmployee.find(:all ,:conditions=>"employee_grade_id = #{params[:id]}")
     end
     if employees.empty?
-      EmployeeGrade.find(params[:id]).destroy
-      @grades = EmployeeGrade.find :all
-      flash[:notice]=t('flash3')
+      Hr::EmployeeGrade.find(params[:id]).destroy
+      @grades = Hr::EmployeeGrade.find :all
+      flash[:notice]=t('employee.flash3')
       redirect_to :action => "add_grade"
     else
-      flash[:warn_notice]=t('flash4')
+      flash[:warn_notice]=t('employee.flash4')
       redirect_to :action => "add_grade"
     end
   end
 
   def add_bank_details
-    @bank_details = BankField.find(:all,:order => "name asc",:conditions=>{:status => true})
-    @inactive_bank_details = BankField.find(:all,:order => "name asc",:conditions=>{:status => false})
-    @bank_field = BankField.new(params[:bank_field])
+    @bank_details = Hr::BankField.find(:all,:order => "name asc",:conditions=>{:status => true})
+    @inactive_bank_details = Hr::BankField.find(:all,:order => "name asc",:conditions=>{:status => false})
+    @bank_field = Hr::BankField.new(params[:bank_field])
     if request.post? and @bank_field.save
-      flash[:notice] =t('flash11')
+      flash[:notice] =t('employee.flash11')
       redirect_to :controller => "employee", :action => "add_bank_details"
     end
   end
 
   def edit_bank_details
-    @bank_details = BankField.find(params[:id])
+    @bank_details = Hr::BankField.find(params[:id])
     if request.post? and @bank_details.update_attributes(params[:bank_details])
-      flash[:notice] = t('flash12')
+      flash[:notice] = t('employee.flash12')
       redirect_to :action => "add_bank_details"
     end
   end
   def delete_bank_details
-    employees = EmployeeBankDetail.find(:all ,:conditions=>"bank_field_id = #{params[:id]}")
+    employees = Hr::EmployeeBankDetail.find(:all ,:conditions=>"bank_field_id = #{params[:id]}")
     if employees.empty?
-      BankField.find(params[:id]).destroy
-      @bank_details = BankField.find(:all)
-      flash[:notice]=t('flash3')
+      Hr::BankField.find(params[:id]).destroy
+      @bank_details = Hr::BankField.find(:all)
+      flash[:notice]=t('employee.flash3')
       redirect_to :action => "add_bank_details"
     else
-      flash[:warn_notice]=t('flash4')
+      flash[:warn_notice]=t('employee.flash4')
       redirect_to :action => "add_bank_details"
     end
   end
@@ -240,7 +242,7 @@ class EmployeeController < ApplicationController
       @additional_field = AdditionalField.new(params[:additional_field])
       @additional_field.priority = priority
       if @additional_field.save
-        flash[:notice] = t('flash13')
+        flash[:notice] = t('employee.flash13')
         redirect_to :controller => "employee", :action => "add_additional_details"
       end
     end
@@ -275,7 +277,7 @@ class EmployeeController < ApplicationController
       render :action=>'add_additional_details'
     else
       if @additional_field.update_attributes(params[:additional_field])
-        flash[:notice] = t('flash14')
+        flash[:notice] = t('employee.flash14')
         redirect_to :action => "add_additional_details"
       else
         render :action=>"add_additional_details"
@@ -285,14 +287,14 @@ class EmployeeController < ApplicationController
 
   def delete_additional_details
     if params[:id]
-      employees = EmployeeAdditionalDetail.find(:all ,:conditions=>"additional_field_id = #{params[:id]}")
+      employees = Hr::EmployeeAdditionalDetail.find(:all ,:conditions=>"additional_field_id = #{params[:id]}")
       if employees.empty?
         AdditionalField.find(params[:id]).destroy
         @additional_details = AdditionalField.find(:all)
-        flash[:notice]=t('flash3')
+        flash[:notice]=t('employee.flash3')
         redirect_to :action => "add_additional_details"
       else
-        flash[:warn_notice]=t('flash4')
+        flash[:warn_notice]=t('employee.flash4')
         redirect_to :action => "add_additional_details"
       end
     else
@@ -325,41 +327,41 @@ class EmployeeController < ApplicationController
           @leave_type.each do |e|
             EmployeeLeave.create( :employee_id => @employee.id, :employee_leave_type_id => e.id, :leave_count => e.max_leave_count)
           end
-          flash[:notice] = "#{t('flash15')} #{@employee.first_name} #{t('flash16')}"
+          flash[:notice] = "#{t('employee.flash15')} #{@employee.first_name} #{t('employee.flash16')}"
           redirect_to :controller =>"employee" ,:action => "admission2", :id => @employee.id
         end
       else
         @employee.errors.add(:employee_number, "#{t('should_not_be_admin')}")
       end
-      @positions = EmployeePosition.find_all_by_employee_category_id(params[:employee][:employee_category_id])
+      @positions = Hr::EmployeePosition.find_all_by_employee_category_id(params[:employee][:employee_category_id])
     end
   end
 
   def update_positions
-    category = EmployeeCategory.find(params[:category_id])
-    @positions = EmployeePosition.find_all_by_employee_category_id(category.id,:conditions=>'status = 1')
+    category = Hr::EmployeeCategory.find(params[:category_id])
+    @positions = Hr::EmployeePosition.find_all_by_employee_category_id(category.id,:conditions=>'status = 1')
     render :update do |page|
       page.replace_html 'positions1', :partial => 'positions', :object => @positions
     end
   end
 
   def edit1
-    @categories = EmployeeCategory.find(:all,:order => "name asc", :conditions => "status = true")
-    @positions = EmployeePosition.find(:all)
-    @grades = EmployeeGrade.find(:all,:order => "name asc", :conditions => "status = true")
-    @departments = EmployeeDepartment.find(:all,:order => "name asc", :conditions => "status = true")
-    @employee = Employee.find(params[:id])
+    @categories = Hr::EmployeeCategory.find(:all,:order => "name asc", :conditions => "status = true")
+    @positions = Hr::EmployeePosition.find(:all)
+    @grades = Hr::EmployeeGrade.find(:all,:order => "name asc", :conditions => "status = true")
+    @departments = Hr::EmployeeDepartment.find(:all,:order => "name asc", :conditions => "status = true")
+    @employee = Hr::Employee.find(params[:id])
     @employee_user = @employee.user
     if request.post?
       if  params[:employee][:employee_number].downcase != 'admin' or @employee_user.admin
         if @employee.update_attributes(params[:employee])
           if params[:employee][:status] == "true"
-            Employee.update(@employee.id, :status => true)
+            Hr::Employee.update(@employee.id, :status => true)
           else
-            Employee.update(@employee.id, :status => false)
+            Hr::Employee.update(@employee.id, :status => false)
           end
 
-          flash[:notice] = "#{t('flash15')}  #{@employee.first_name} #{t('flash17')}"
+          flash[:notice] = "#{t('employee.flash15')}  #{@employee.first_name} #{t('employee.flash17')}"
           redirect_to :controller =>"employee" ,:action => "profile", :id => @employee.id
         end
       else
@@ -376,7 +378,7 @@ class EmployeeController < ApplicationController
       size =  params[:employee][:image_file].size.to_f unless  params[:employee][:image_file].nil?
       if size < 280000
         if @employee.update_attributes(params[:employee])
-          flash[:notice] = "#{t('flash15')}  #{@employee.first_name} #{t('flash18')}"
+          flash[:notice] = "#{t('employee.flash15')}  #{@employee.first_name} #{t('flash18')}"
           redirect_to :controller =>"employee" ,:action => "profile", :id => @employee.id
         end
       else
@@ -454,7 +456,7 @@ class EmployeeController < ApplicationController
           EmployeeBankDetail.create(:employee_id=>@employee.id,:bank_field_id=>k,:bank_info=>v['bank_info'])
         end
       end
-      flash[:notice] = "#{t('flash15')}#{@employee.first_name} #{t('flash12')}"
+      flash[:notice] = "#{t('employee.flash15')}#{@employee.first_name} #{t('flash12')}"
       redirect_to :action => "profile", :id => @employee.id
     end
   end
@@ -516,7 +518,7 @@ class EmployeeController < ApplicationController
           flash[:notice] = "#{t('flash25')}#{@employee.first_name}"
           redirect_to :action => "edit_privilege", :id => @employee.employee_number
         else
-          flash[:notice] = "#{t('flash15')}#{@employee.first_name} #{t('flash14')}"
+          flash[:notice] = "#{t('employee.flash15')}#{@employee.first_name} #{t('flash14')}"
           redirect_to :action => "profile", :id => @employee.id
         end
       end
@@ -556,7 +558,7 @@ class EmployeeController < ApplicationController
           EmployeeAdditionalDetail.create(:employee_id=>@employee.id,:additional_field_id=>k,:additional_info=>v['additional_info'])
         end
       end
-      flash[:notice] = "#{t('flash15')}#{@employee.first_name} #{t('flash14')}"
+      flash[:notice] = "#{t('employee.flash15')}#{@employee.first_name} #{t('flash14')}"
       redirect_to :action => "profile", :id => @employee.id
     end
   end
@@ -582,15 +584,15 @@ class EmployeeController < ApplicationController
   end
 
   def change_reporting_manager
-    @departments = EmployeeDepartment.find(:all)
-    @categories  = EmployeeCategory.find(:all)
-    @positions   = EmployeePosition.find(:all)
-    @grades      = EmployeeGrade.find(:all)
-    @emp = Employee.find(params[:id])
+    @departments = Hr::EmployeeDepartment.find(:all)
+    @categories  = Hr::EmployeeCategory.find(:all)
+    @positions   = Hr::EmployeePosition.find(:all)
+    @grades      = Hr::EmployeeGrade.find(:all)
+    @emp = Hr::Employee.find(params[:id])
     @reporting_manager = Employee.find(@emp.reporting_manager_id).first_name unless @emp.reporting_manager_id.nil?
     if request.post?
-      @employee = Employee.find(params[:id])
-      Employee.update(@employee, :reporting_manager_id => params[:employee][:reporting_manager_id])
+      @employee = Hr::Employee.find(params[:id])
+      Hr::Employee.update(@employee, :reporting_manager_id => params[:employee][:reporting_manager_id])
       flash[:notice]=t('flash26')
       redirect_to :action => "profile", :id=>@employee.id
     end
@@ -651,9 +653,8 @@ class EmployeeController < ApplicationController
   end
 
   def profile
-
     @current_user = current_user
-    @employee = Employee.find(params[:id])
+    @employee = Hr::Employee.find(params[:id])
     @new_reminder_count = Reminder.find_all_by_recipient(@current_user.id, :conditions=>"is_read = false")
     @gender = "Male"
     @gender = "Female" if @employee.gender == "f"
@@ -674,7 +675,6 @@ class EmployeeController < ApplicationController
     month = total_month%12
     @total_years = (exp_years || 0)+current_years+year
     @total_months = month
-
   end
 
   def profile_general
@@ -739,12 +739,12 @@ class EmployeeController < ApplicationController
   end
 
   def profile_pdf
-    @employee = Employee.find(params[:id])
+    @employee = Hr::Employee.find(params[:id])
     @gender = "Male"
     @gender = "Female" if @employee.gender == "f"
     @status = "Active"
     @status = "Inactive" if @employee.status == false
-    @reporting_manager = Employee.find(@employee.reporting_manager_id).first_name unless @employee.reporting_manager_id.nil?
+    @reporting_manager = Hr::Employee.find(@employee.reporting_manager_id).first_name unless @employee.reporting_manager_id.nil?
     exp_years = @employee.experience_year
     exp_months = @employee.experience_month
     date = Date.today
@@ -761,10 +761,9 @@ class EmployeeController < ApplicationController
     @total_months = month
     @home_country = Country.find(@employee.home_country_id).name unless @employee.home_country_id.nil?
     @office_country = Country.find(@employee.office_country_id).name unless @employee.office_country_id.nil?
-    @bank_details = EmployeeBankDetail.find_all_by_employee_id(@employee.id)
-    @additional_details = EmployeeAdditionalDetail.find_all_by_employee_id(@employee.id)
+    @bank_details = Hr::EmployeeBankDetail.find_all_by_employee_id(@employee.id)
+    @additional_details = Hr::EmployeeAdditionalDetail.find_all_by_employee_id(@employee.id)
     render :pdf => 'profile_pdf'
-
 
     #    respond_to do |format|
     #      format.pdf { render :layout => false }
@@ -1572,21 +1571,21 @@ class EmployeeController < ApplicationController
     #    end
   end
   def advanced_search
-    @search = Employee.search(params[:search])
+    @search = Hr::Employee.search(params[:search])
     @sort_order=""
     @sort_order=params[:sort_order] if  params[:sort_order]
     if params[:search]
       if params[:search][:status_equals]=="true"
-        @search = Employee.search(params[:search])
+        @search = Hr::Employee.search(params[:search])
         @employees1 = @search.all
         @employees2 = []
       elsif params[:search][:status_equals]=="false"
-        @search = ArchivedEmployee.search(params[:search])
+        @search = Hr::ArchivedEmployee.search(params[:search])
         @employees1 = @search.all
         @employees2 = []
       else
-        @search1 = Employee.search(params[:search]).all
-        @search2 = ArchivedEmployee.search(params[:search]).all
+        @search1 = Hr::Employee.search(params[:search]).all
+        @search2 = Hr::ArchivedEmployee.search(params[:search]).all
         @employees1 = @search1
         @employees2 = @search2
       end
@@ -1685,7 +1684,7 @@ class EmployeeController < ApplicationController
     @employee = Employee.find(params[:id])
     associate_employee = Employee.find(:all, :conditions=>["reporting_manager_id=#{@employee.id}"])
     unless associate_employee.blank?
-      flash[:notice] = t('flash35')
+      flash[:notice] = t('employee.flash35')
       redirect_to :action=>'remove_subordinate_employee', :id=>@employee.id
     end
   end
@@ -1709,7 +1708,7 @@ class EmployeeController < ApplicationController
     @employee = Employee.find(params[:id])
     @dependency = @employee.former_dependency
     if request.post?
-      flash[:notice]= "#{t('flash32')}  #{@employee.employee_number}"
+      flash[:notice]= "#{t('employee.flash32')}  #{@employee.employee_number}"
       EmployeesSubject.destroy_all(:employee_id=>@employee.id)
       @employee.archive_employee(params[:remove][:status_description])
       redirect_to :action => "hr"
@@ -1722,10 +1721,10 @@ class EmployeeController < ApplicationController
       employee_subject=EmployeesSubject.destroy_all(:employee_id=>employee.id)
       employee.user.destroy
       employee.destroy
-      flash[:notice] = "#{t('flash46')}#{employee.employee_number}."
+      flash[:notice] = "#{t('employee.flash46')}#{employee.employee_number}."
       redirect_to :controller => 'user', :action => 'dashboard'
     else
-      flash[:notice] = "#{t('flash44')}"
+      flash[:notice] = "#{t('employee.flash44')}"
       redirect_to  :action => 'remove' ,:id=>employee.id
     end
   end
@@ -1781,7 +1780,7 @@ class EmployeeController < ApplicationController
     dates.each do |d|
       d.approve(current_user.id)
     end
-    flash[:notice] = t('flash34')
+    flash[:notice] = t('employee.flash34')
     redirect_to :action => "hr"
 
   end

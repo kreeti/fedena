@@ -40,8 +40,10 @@
     <p class="flash-msg"> <%= flash[:notice] %> </p>
   <% end %>
 
-  <% form_for(@student, :url => {:action=> 'admission1'}, :html=> {:multipart=>true}) do |s| %>
-    <%= error_messages_for 'student', :header_message => nil %>
+  <%= form_for(@student, :url => {:action=> 'admission1'}, :html=> {:multipart=>true}) do |s| %>
+    <% @student.errors.full_messages.each do |msg| %>
+      <p><%= msg %></p>
+    <% end %>
 
     <div id="admission1_form">
 
@@ -63,8 +65,7 @@
         <div class="student_admission_date">
           <label for="student_admission_date"><%= t('admission_date') %> <span class="necessary-field">*</span> </label>
           <div class="text-input-bg-admission">
-            <%= calendar_date_select_tag 'student[admission_date]', I18n.l(Date.today,:format=>:default),
-              :year_range => 15.years.ago..5.years.from_now, :readonly=>true, :popup=>"force" %>
+            <%= s.text_field :admission_date, id: 'datepicker' %>
           </div>
         </div>
 
@@ -106,8 +107,7 @@
         <div class="label-field-pair">
           <label for="student_date_of_birth"><%= t('date_of_birth') %> <span class="necessary-field">*</span> </label>
           <div class="text-input-bg">
-            <%= calendar_date_select_tag 'student[date_of_birth]',
-              I18n.l(Date.today-5.years,:format=>:default) , :year_range => 72.years.ago..0.years.ago,:popup=>"force" %>
+            <%= s.text_field :date_of_birth, id: 'datepicker1' %>
           </div>
         </div>
 

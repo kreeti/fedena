@@ -33,8 +33,10 @@
     <p class="flash-msg"> <%= flash[:notice] %> </p>
   <% end %>
 
-  <% form_for :student, :url => {:action => 'edit'}, :html => {:multipart => true} do |s| %>
-    <%= error_messages_for 'student' %>
+  <%= form_for :student, :url => {:action => 'edit'}, :html => {:multipart => true} do |s| %>
+    <% @student.errors.full_messages.each do |msg| %>
+      <p><%= msg %></p>
+    <% end %>
     <div id="admission1-form">
       <div id="necessary-field-notification"><%= t('legend1') %><span class="necessary-field">*</span> <%= t('legend2') %></div>
 
@@ -48,8 +50,7 @@
         <div class="label-field-pair-edit">
           <label for="master_student_admission_date"><%= t('admission_date') %> <span class="necessary-field">*</span></label>
           <div class="text-input-bg">
-            <%= calendar_date_select_tag 'student[admission_date]', I18n.l(@student.admission_date,:format=>:default),
-              :year_range => 15.years.ago..5.years.from_now,:popup => "force" %>
+            <%= s.text_field :admission_date, id: 'datepicker' %>
           </div>
         </div>
 
@@ -94,8 +95,7 @@
         <div class="label-field-pair">
           <label for="master_student_date_of_birth"><%= t('date_of_birth') %><span class="necessary-field">*</span></label>
           <div class="text-input-bg">
-            <%= calendar_date_select_tag 'student[date_of_birth]',
-              I18n.l(@student.date_of_birth,:format=>:default), :year_range => 40.years.ago..0.years.ago ,:readonly=>true,:popup => "force"  %>
+            <%= s.text_field :date_of_birth, id: 'datepicker1' %>
           </div>
         </div>
 

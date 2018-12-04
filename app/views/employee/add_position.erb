@@ -43,13 +43,15 @@
         </ul>
       </div>
     <% end %>
-    <%- form_for :position do |c| -%>
+    <%= form_for :position do |c| -%>
 
       <% unless flash[:notice].nil? %>
         <p class="flash-msg"> <%= flash[:notice] %> </p>
       <% end %>
 
-      <%= error_messages_for 'position' %>
+      <% @position.errors.full_messages.each do |msg| %>
+        <%= msg %>
+      <% end %>
       <div id="form-content">
         <div class="label-field-pair">
           <label for="position_name"><%= t('name') %></label>

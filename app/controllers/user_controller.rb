@@ -179,7 +179,7 @@ class UserController < ApplicationController
       @student = Student.find_by_admission_no(@user.username[1..@user.username.length])
     end
     @first_time_login = FedenaConfiguration.get_config_value('FirstTimeLoginEnable')
-    if  session[:user_id].present? and @first_time_login == "1" and @user.is_first_login != false
+    if session[:user_id].present? and @first_time_login == "1" and @user.is_first_login != false
       flash[:notice] = "#{t('first_login_attempt')}"
       redirect_to :controller => "user",:action => "first_login_change_password",:id => @user.username
     end
@@ -206,9 +206,9 @@ class UserController < ApplicationController
           user.reset_password_code = Digest::SHA1.hexdigest( "#{user.email}#{Time.now.to_s.split(//).sort_by {rand}.join}" )
           user.reset_password_code_until = 1.day.from_now
           user.role = user.role_name
-          user.save(false)
+          user.save(validate: false)
           url = "#{request.protocol}#{request.host_with_port}"
-          UserNotifier.deliver_forgot_password(user,url)
+          UserNotifier.forgot_password(user,url)
           flash[:notice] = "#{t('flash18')}"
           redirect_to :action => "index"
         else
@@ -218,10 +218,10 @@ class UserController < ApplicationController
       else
         flash[:notice] = "#{t('flash19')} #{params[:reset_password][:username]}"
       end
+    else
+      render layout: 'forgotpw'
     end
-    render layout: 'forgotpw'
   end
-
 
   def login
     @institute = FedenaConfiguration.find_by_config_key("LogoName")

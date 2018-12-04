@@ -120,7 +120,7 @@ class Batch < ActiveRecord::Base
   end
 
   def holiday_event_dates
-    @common_holidays ||= Event.holidays.is_common
+    @common_holidays = []
     @batch_holidays=events.holidays
     all_holiday_events = @batch_holidays+@common_holidays
     event_holidays = []

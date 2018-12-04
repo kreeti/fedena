@@ -28,7 +28,7 @@
 
 <div id="page-yield">
 
-  <%- form_for :department do |c| -%>
+  <%= form_for :department do |c| -%>
 
   <% unless flash[:notice].nil? %>
     <p class="flash-msg"> <%= flash[:notice] %> </p>
@@ -37,7 +37,9 @@
     <div id="errorExplanation" class="errorExplanation"><%= flash[:warn_notice] %> </div>
   <% end %>
 
-    <%= error_messages_for 'department' %>
+    <% @department.errors.full_messages.each do |msg| %>
+      <%= msg %>
+    <% end %>
 <div id="form-content">
     <div class="label-field-pair">
       <label for="department_name"><%= t('name') %></label>

@@ -21,49 +21,48 @@ class PayrollController < ApplicationController
   filter_access_to :all
 
   def add_category
-    @categories = PayrollCategory.find_all_by_is_deduction(false, :order=> "name ASC")
-    @deductionable_categories = PayrollCategory.find_all_by_is_deduction(true, :order=> "name ASC")
-    @category = PayrollCategory.new(params[:category])
+    @categories = Hr::PayrollCategory.find_all_by_is_deduction(false, :order=> "name ASC")
+    @deductionable_categories = Hr::PayrollCategory.find_all_by_is_deduction(true, :order=> "name ASC")
+    @category = Hr::PayrollCategory.new(params[:category])
     if request.post? and @category.save
-      flash[:notice]="#{t('flash1')}"
+      flash[:notice]="#{t('payroll.flash1')}"
       redirect_to :action => "add_category"
     end
-
   end
 
   def edit_category
-    @categories = PayrollCategory.find(:all, :order=> "name ASC")
-    @category = PayrollCategory.find(params[:id])
+    @categories = Hr::PayrollCategory.find(:all, :order=> "name ASC")
+    @category = Hr::PayrollCategory.find(params[:id])
     if request.post? and @category.update_attributes(params[:category])
-      flash[:notice] = "#{t('flash2')}"
+      flash[:notice] = "#{t('payroll.flash2')}"
       redirect_to :action => "add_category"
     end
   end
 
   def activate_category
-    category = PayrollCategory.update(params[:id], :status => true)
-    @categories = PayrollCategory.find_all_by_is_deduction(false, :order=> "name ASC")
-    @deductionable_categories = PayrollCategory.find_all_by_is_deduction(true, :order=> "name ASC")
+    category = Hr::PayrollCategory.update(params[:id], :status => true)
+    @categories = Hr::PayrollCategory.find_all_by_is_deduction(false, :order=> "name ASC")
+    @deductionable_categories = Hr::PayrollCategory.find_all_by_is_deduction(true, :order=> "name ASC")
     render :partial => "category"
   end
 
   def inactivate_category
-    category = PayrollCategory.update(params[:id], :status => false)
-    @categories = PayrollCategory.find_all_by_is_deduction(false, :order=> "name ASC")
-    @deductionable_categories = PayrollCategory.find_all_by_is_deduction(true, :order=> "name ASC")
+    category = Hr::PayrollCategory.update(params[:id], :status => false)
+    @categories = Hr::PayrollCategory.find_all_by_is_deduction(false, :order=> "name ASC")
+    @deductionable_categories = Hr::PayrollCategory.find_all_by_is_deduction(true, :order=> "name ASC")
     render :partial => "category"
   end
 
   def delete_category
     if params[:id]
-      employees = EmployeeSalaryStructure.find(:all ,:conditions=>"payroll_category_id = #{params[:id]}")
+      employees = Hr::EmployeeSalaryStructure.find(:all ,:conditions=>"payroll_category_id = #{params[:id]}")
       if employees.empty?
-        PayrollCategory.find(params[:id]).destroy
-        @departments = PayrollCategory.find :all
-        flash[:notice]="#{t('flash3')}"
+        Hr::PayrollCategory.find(params[:id]).destroy
+        @departments = Hr::PayrollCategory.find :all
+        flash[:notice]="#{t('payroll.flash3')}"
         redirect_to :action => "add_category"
       else
-        flash[:warn_notice]="#{t('flash4')}"
+        flash[:warn_notice]="#{t('payroll.flash4')}"
         redirect_to :action => "add_category"
       end
     else

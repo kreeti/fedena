@@ -25,7 +25,7 @@
   }
 
   jQuery.ui.autocomplete.prototype._renderItem = function (ul, item) {
-    //  item.label = item.label.replace(new RegExp("(?![^&;]+;)(?!<[^<>]*)(" + jQuery.ui.autocomplete.escapeRegex(this.term) + ")(?![^<>]*>)(?![^&;]+;)", "gi"), "<strong>$1</strong>");
+     item.label = item.label.replace(new RegExp("(?![^&;]+;)(?!<[^<>]*)(" + jQuery.ui.autocomplete.escapeRegex(this.term) + ")(?![^<>]*>)(?![^&;]+;)", "gi"), "<strong>$1</strong>");
     if (item.menutype == 'action')    {
       return jQuery("<li></li>")
       .data("item.autocomplete",item)
@@ -39,14 +39,14 @@
     .appendTo(ul);
   };
 
-  jQuery(document).bind('keypress', 'q', function(){jQuery("input#autosuggest_menu_input").focus();return false;});
+  // jQuery(document).bind('keypress', 'q', function(){jQuery("input#autosuggest_menu_input").focus();return false;});
   gotoLink = function(event,ui){
     window.location.href = ui.item.value;
     return false;
   };
   searchoptions = function (request,response){
     var query=request.term;
-    var available_options = <%= autosuggest_menuitems %>;
+    var available_options = '<%= autosuggest_menuitems %>';
     var options = jQuery.ui.autocomplete.filter(available_options,query).slice(0,11);
     options.push({'menutype': 'action',
       'label' : '<%=t('autosuggest_menu.search_students')%> : <strong>'+query+'</strong>',
@@ -70,5 +70,4 @@
 </script>
 
 
-<%= text_field_tag :autosuggest_menu,{} ,:id=>'autosuggest_menu_input',:placeholder => "#{t('autosuggest_menu.search_actions_and_events')}" %>
-
+<%= text_field_tag :autosuggest_menu,'' ,:id=>'autosuggest_menu_input',:placeholder => "#{t('autosuggest_menu.search_actions_and_events')}" %>

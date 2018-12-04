@@ -62,7 +62,7 @@
     <tr class="odd"><td><%= t('email') %></td><td class="right"><%= @student.email %></td></tr>
     <tr class="even"><td><%= t('group_tutor') %></td><td class="right">
         <% unless @student.batch.employee_id.nil? %>
-          <% @assigned_employees = Employee.find(:all,:conditions=>"FIND_IN_SET(id,\"#{@student.batch.employee_id}\")")  %>
+          <% @assigned_employees = Hr::Employee.find(:all,:conditions=>"FIND_IN_SET(id,\"#{@student.batch.employee_id}\")")  %>
 
           <% @assigned_employees.each do |e| %>
             <%= e.full_name %>

@@ -115,7 +115,7 @@
       <tr class="odd left"><td><%= t('mobile') %></td><td class="right"><%= @student.phone2 %></td></tr>
       <tr class="even left"><td><%= t('email') %></td><td class="right"><%= @student.email %></td></tr>
       <% unless @student.batch.employee_id.nil? %>
-        <% @assigned_employees = Employee.find(:all,:conditions=>"FIND_IN_SET(id,\"#{@student.batch.employee_id}\")")  %>
+        <% @assigned_employees = Hr::Employee.find(:all,:conditions=>"FIND_IN_SET(id,\"#{@student.batch.employee_id}\")")  %>
         <tr class="even left"><td><%= t('group_tutor') %>(s) :</td><td class="right">
             <% @tutors = @assigned_employees.map{|e| e.full_name} %>
             <% @tutor_ids = @assigned_employees.map{|e| e.user.id} %>

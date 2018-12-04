@@ -36,7 +36,7 @@ class FinanceController < ApplicationController
   def donation
     @donation = FinanceDonation.new(params[:donation])
     if request.post? and @donation.save
-      flash[:notice] = "#{t('flash1')}"
+      flash[:notice] = "#{t('finance.flash1')}"
       redirect_to :action => 'donation_receipt', :id => @donation.id
     end
   end
@@ -49,10 +49,10 @@ class FinanceController < ApplicationController
     @donation = FinanceDonation.find(params[:id])
     @transaction = FinanceTransaction.find(@donation.transaction_id)
     if request.post? and @donation.update_attributes(params[:donation])
-      donor = "#{t('flash15')} #{params[:donation][:donor]}"
+      donor = "#{t('finance.flash15')} #{params[:donation][:donor]}"
       FinanceTransaction.update(@transaction.id, :description => params[:donation][:description], :title=>donor, :amount=>params[:donation][:amount], :transaction_date=>@donation.transaction_date)
       redirect_to :action => 'donors'
-      flash[:notice] = "#{t('flash16')}"
+      flash[:notice] = "#{t('finance.flash16')}"
     end
   end
 
@@ -62,7 +62,7 @@ class FinanceController < ApplicationController
     if  @donation.destroy
       @transaction.destroy
       redirect_to :action => 'donors'
-      flash[:notice] = "#{t('flash25')}"
+      flash[:notice] = "#{t('finance.flash25')}"
     end
   end
 
@@ -78,15 +78,15 @@ class FinanceController < ApplicationController
   end
 
   def expense_create
-    @finance_transaction = FinanceTransaction.new
-    @categories = FinanceTransactionCategory.expense_categories
+    @finance_transaction = Finance::FinanceTransaction.new
+    @categories = Finance::FinanceTransactionCategory.expense_categories
     if @categories.empty?
-      flash[:notice] = "#{t('flash2')}"
+      flash[:notice] = "#{t('employee.flash2')}"
     end
     if request.post?
-      @finance_transaction = FinanceTransaction.new(params[:finance_transaction])
+      @finance_transaction = Finance::FinanceTransaction.new(params[:finance_transaction])
       if @finance_transaction.save
-        flash[:notice] = "#{t('flash3')}"
+        flash[:notice] = "#{t('employee.flash3')}"
         redirect_to :action=>"expense_create"
       else
         render :action=>"expense_create"
@@ -98,7 +98,7 @@ class FinanceController < ApplicationController
     @transaction = FinanceTransaction.find(params[:id])
     @categories = FinanceTransactionCategory.all(:conditions =>"name != 'Salary' and is_income = false" )
     if request.post? and @transaction.update_attributes(params[:transaction])
-      flash[:notice] = "#{t('flash4')}"
+      flash[:notice] = "#{t('employee.flash4')}"
       redirect_to  :action=>:expense_list
     end
   end
@@ -108,7 +108,7 @@ class FinanceController < ApplicationController
 
   def expense_list_update
     if params[:start_date].to_date > params[:end_date].to_date
-      flash[:warn_notice] = "#{t('flash17')}"
+      flash[:warn_notice] = "#{t('employee.flash17')}"
       redirect_to :action => 'expense_list'
     end
     @start_date = (params[:start_date]).to_date
@@ -125,15 +125,15 @@ class FinanceController < ApplicationController
   end
 
   def income_create
-    @finance_transaction = FinanceTransaction.new()
-    @categories = FinanceTransactionCategory.income_categories
+    @finance_transaction = Finance::FinanceTransaction.new()
+    @categories = Finance::FinanceTransactionCategory.income_categories
     if @categories.empty?
-      flash[:notice] = "#{t('flash5')}"
+      flash[:notice] = "#{t('finance.flash5')}"
     end
     if request.post?
-      @finance_transaction = FinanceTransaction.new(params[:finance_transaction])
+      @finance_transaction = Finance::FinanceTransaction.new(params[:finance_transaction])
       if @finance_transaction.save
-        flash[:notice] = "#{t('flash6')}"
+        flash[:notice] = "#{t('finance.flash6')}"
         redirect_to :action=>"income_create"
       else
         render :action=>"income_create"
@@ -153,7 +153,7 @@ class FinanceController < ApplicationController
     @transaction = FinanceTransaction.find(params[:id])
     @categories = FinanceTransactionCategory.all(:conditions => "is_income=true and name NOT IN (#{@cat_names.join(',')})")
     if request.post? and @transaction.update_attributes(params[:transaction])
-      flash[:notice] = "#{t('flash7')}"
+      flash[:notice] = "#{t('finance.flash7')}"
       redirect_to :action=> 'income_list'
     end
   end
@@ -169,7 +169,7 @@ class FinanceController < ApplicationController
       auto_transactions.each { |a| a.destroy } unless auto_transactions.nil?
     end
     @transaction.destroy
-    flash[:notice]="#{t('flash18')}"
+    flash[:notice]="#{t('finance.flash18')}"
     if income
       redirect_to :action=>'income_list'
     else
@@ -209,7 +209,7 @@ class FinanceController < ApplicationController
   end
 
   def categories
-    @categories = FinanceTransactionCategory.all(:conditions => {:deleted => false},:order=>'name asc')
+    @categories = Finance::FinanceTransactionCategory.all(:conditions => {:deleted => false},:order=>'name asc')
     @fixed_categories = @categories.reject{|c|!c.is_fixed}
     @other_categories = @categories.reject{|c|c.is_fixed}
   end
@@ -446,7 +446,7 @@ class FinanceController < ApplicationController
         :employee_id => emp_ids
       ))
 
-    flash[:notice] = "#{t('flash8')}"
+    flash[:notice] = "#{t('finance.flash8')}"
     redirect_to :action => "index"
 
 
@@ -461,7 +461,7 @@ class FinanceController < ApplicationController
         :salary_date => params[:id2],
         :employee_id => params[:id]
       ))
-    flash[:notice] = "#{t('flash8')}"
+    flash[:notice] = "#{t('finance.flash8')}"
     render :update do |page|
       page.reload
     end
@@ -981,14 +981,14 @@ class FinanceController < ApplicationController
           end
           Event.create(:title=> "#{t('fees_due')}", :description =>@additional_category.name, :start_date => @due_date.to_datetime, :end_date => @due_date.to_datetime, :is_due => true, :origin => @collection_date)
         end
-        flash[:notice] = "#{t('flash9')}"
+        flash[:notice] = "#{t('finance.flash9')}"
         redirect_to(:action => "add_particulars" ,:id => @collection_date.id)
       else
-        flash[:notice] = "#{t('flash10')}"
+        flash[:notice] = "#{t('finance.flash10')}"
         redirect_to :action => "additional_fees_create_form"
       end
     else
-      flash[:notice] = "#{t('flash11')}"
+      flash[:notice] = "#{t('finance.flash11')}"
       redirect_to :action => "additional_fees_create_form"
     end
   end
@@ -999,7 +999,7 @@ class FinanceController < ApplicationController
     respond_to do |format|
       format.js { render :action => 'additional_fees_edit' }
     end
-    flash[:notice] = "#{t('flash26')}"
+    flash[:notice] = "#{t('finance.flash26')}"
   end
 
   def additional_fees_update
@@ -1036,7 +1036,7 @@ class FinanceController < ApplicationController
     @additional_categories = FinanceFeeCategory.find(:all, :conditions =>["is_deleted = '#{false}' and is_master = '#{false}' and batch_id = '#{@finance_fee_category.batch_id}'"])
     respond_to do |format|
       format.js { render :action => 'additional_fees_delete' }
-      flash[:notice] = "#{t('flash27')}"
+      flash[:notice] = "#{t('finance.flash27')}"
     end
   end
 
@@ -1458,11 +1458,11 @@ class FinanceController < ApplicationController
         @paid_fees = FinanceTransaction.find(:all,:conditions=>"FIND_IN_SET(id,\"#{tid}\")")
       else
         @paid_fees = FinanceTransaction.find(:all,:conditions=>"FIND_IN_SET(id,\"#{@financefee.transaction_id}\")")
-        @financefee.errors.add_to_base("#{t('flash19')}")
+        @financefee.errors.add_to_base("#{t('finance.flash19')}")
       end
     else
       @paid_fees = FinanceTransaction.find(:all,:conditions=>"FIND_IN_SET(id,\"#{@financefee.transaction_id}\")")
-      @financefee.errors.add_to_base("#{t('flash23')}")
+      @financefee.errors.add_to_base("#{t('finance.flash23')}")
     end
     render :update do |page|
       page.replace_html "student", :partial => "student_fees_submission"
@@ -1521,7 +1521,7 @@ class FinanceController < ApplicationController
       unless params[:fine][:fee].to_f < 0
         @fine = (params[:fine][:fee])
       else
-        @financefee.errors.add_to_base("#{t('flash24')}")
+        @financefee.errors.add_to_base("#{t('finance.flash24')}")
       end
       @fee_category = FinanceFeeCategory.find(@fee_collection.fee_category_id,:conditions => ["is_deleted IS NOT NULL"])
       @fee_particulars = @date.fees_particulars(@student)
@@ -1610,7 +1610,7 @@ class FinanceController < ApplicationController
       @fine = (params[:fine][:fee])
       flash[:notice] = nil
     else
-      flash[:notice] = "#{t('flash24')}"
+      flash[:notice] = "#{t('finance.flash24')}"
     end
 
     @due_date = @fee_collection.due_date
@@ -1688,12 +1688,12 @@ class FinanceController < ApplicationController
           unless @financefee.transaction_id.blank?
             @paid_fees = FinanceTransaction.find(:all,:conditions=>"FIND_IN_SET(id,\"#{@financefee.transaction_id}\")")
           end
-          flash[:warning] = "#{t('flash14')}"
+          flash[:warning] = "#{t('finance.flash14')}"
         else
-          flash[:notice] = "#{t('flash19')}"
+          flash[:notice] = "#{t('finance.flash19')}"
         end
       else
-        flash[:notice] = "#{t('flash23')}"
+        flash[:notice] = "#{t('finance.flash23')}"
       end
     end
     render :update do |page|
@@ -1858,13 +1858,13 @@ class FinanceController < ApplicationController
           @financefee.update_attributes(:transaction_id=>tid, :is_paid=>is_paid)
 
           @paid_fees = FinanceTransaction.find(:all,:conditions=>"FIND_IN_SET(id,\"#{tid}\")")
-          flash[:notice] = "#{t('flash14')}"
+          flash[:notice] = "#{t('finance.flash14')}"
           redirect_to  :action => "pay_fees_defaulters",:id => @student,:date => @date
         else
-          flash[:notice] = "#{t('flash19')}"
+          flash[:notice] = "#{t('finance.flash19')}"
         end
       else
-        flash[:notice] = "#{t('flash23')}"
+        flash[:notice] = "#{t('finance.flash23')}"
       end
 
     end
@@ -1886,7 +1886,7 @@ class FinanceController < ApplicationController
       end
       total_fees += @fine unless @fine.nil?
     else
-      flash[:notice] = "#{t('flash24')}"
+      flash[:notice] = "#{t('finance.flash24')}"
     end
     redirect_to  :action => "pay_fees_defaulters", :id=> @student.id, :date=> @date.id, :fine => @fine
   end
@@ -2441,7 +2441,7 @@ class FinanceController < ApplicationController
           unless s.nil?
             if FeeDiscount.find_by_type_and_receiver_id('StudentFeeDiscount',s.id,:conditions=>"finance_fee_category_id = #{@fee_category.id}").present?
               @error = true
-              @fee_discount.errors.add_to_base("#{t('flash20')} - #{a}")
+              @fee_discount.errors.add_to_base("#{t('finance.flash20')} - #{a}")
             end
             unless (s.batch_id == @fee_category.batch_id)
               @error = true

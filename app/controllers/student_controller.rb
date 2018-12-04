@@ -185,7 +185,7 @@ class StudentController < ApplicationController
     @student_additional_details = StudentAdditionalDetail.find_all_by_student_id(@student.id)
     @additional_fields = StudentAdditionalField.find(:all, :conditions=> "status = true", :order=>"priority ASC")
     if @additional_fields.empty?
-      flash[:notice] = "#{t('flash9')} #{@student.first_name} #{@student.last_name}."
+      flash[:notice] = "#{t('student.flash9')} #{@student.first_name} #{@student.last_name}."
       redirect_to :controller => "student", :action => "profile", :id => @student.id
     end
     if request.post?
@@ -218,7 +218,7 @@ class StudentController < ApplicationController
             addl_detail.save if addl_detail.valid?
           end
         end
-        flash[:notice] = "#{t('flash9')} #{@student.first_name} #{@student.last_name}. #{t('new_admission_link')} <a href='/student/admission1'>Click Here</a>"
+        flash[:notice] = "#{t('student.flash9')} #{@student.first_name} #{@student.last_name}. #{t('new_admission_link')} <a href='/student/admission1'>Click Here</a>"
         redirect_to :controller => "student", :action => "profile", :id => @student.id
       end
     end
@@ -437,11 +437,11 @@ class StudentController < ApplicationController
         recipient_list << @student.immediate_contact.email unless (@student.immediate_contact.nil? or @student.immediate_contact.email=="")
       end
       unless recipient_list.empty?
-        FedenaMailer::deliver_email(sender, recipient_list, params['email']['subject'], params['email']['message'])
-        flash[:notice] = "#{t('flash12')} #{recipient_list.join(', ')}"
+        FedenaMailer::email(sender, recipient_list, params['email']['subject'], params['email']['message']).deliver
+        flash[:notice] = "#{t('student.flash12')} #{recipient_list.join(', ')}"
         redirect_to :controller => 'student', :action => 'profile', :id => @student.id
       else
-        @student.errors.add_to_base("#{t('flash20')}")
+        @student.errors.add_to_base("#{t('student.flash20')}")
       end
     end
   end
@@ -549,7 +549,7 @@ class StudentController < ApplicationController
     @parent_info = Guardian.new(params[:parent_detail])
     @countries = Country.all
     if request.post? and @parent_info.save
-      flash[:notice] = "#{t('flash5')} #{@parent_info.ward.full_name}"
+      flash[:notice] = "#{t('student.flash5')} #{@parent_info.ward.full_name}"
       redirect_to :controller => "student" , :action => "admission3_1", :id => @parent_info.ward_id
     end
   end
@@ -606,12 +606,12 @@ class StudentController < ApplicationController
     @student = @guardian.ward
     if @guardian.is_immediate_contact?
       if @guardian.destroy
-        flash[:notice] = "#{t('flash6')}"
+        flash[:notice] = "#{t('student.flash6')}"
         redirect_to :controller => 'student', :action => 'admission3', :id => @student.id
       end
     else
       if @guardian.destroy
-        flash[:notice] = "#{t('flash6')}"
+        flash[:notice] = "#{t('student.flash6')}"
         redirect_to :controller => 'student', :action => 'profile', :id => @student.id
       end
     end
@@ -646,7 +646,7 @@ class StudentController < ApplicationController
     @student_categories = StudentCategory.active
     @student_category = StudentCategory.new(params[:student_category])
     if request.post? and @student_category.save
-      flash[:notice] = "#{t('flash7')}"
+      flash[:notice] = "#{t('student.flash7')}"
       redirect_to :action => 'categories'
     end
   end
@@ -960,7 +960,7 @@ class StudentController < ApplicationController
     @elective_subject = Subject.find(params[:id2])
     render(:update) do |page|
       page.replace_html "stud_#{params[:id]}", :partial=> 'unassign_students'
-      page.replace_html 'flash_box', :text => "<p class='flash-msg'>#{t('flash_msg39')}</p>"
+      page.replace_html 'flash_box', :text => "<p class='flash-msg'>#{t('student.flash_msg39')}</p>"
     end
   end
 
@@ -974,7 +974,7 @@ class StudentController < ApplicationController
     @elective_subject = Subject.find(params[:id2])
     render(:update) do |page|
       page.replace_html 'category-list', :partial=>"all_assign"
-      page.replace_html 'flash_box', :text => "<p class='flash-msg'>#{t('flash_msg40')}</p>"
+      page.replace_html 'flash_box', :text => "<p class='flash-msg'>#{t('student.flash_msg40')}</p>"
     end
   end
 

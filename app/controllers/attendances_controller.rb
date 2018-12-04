@@ -22,6 +22,7 @@ class AttendancesController < ApplicationController
   before_filter :only_assigned_employee_allowed, :except => 'index'
   before_filter :only_privileged_employee_allowed, :only => 'index'
   before_filter :default_time_zone_present_time
+
   def index
     @config = FedenaConfiguration.find_by_config_key('StudentAttendanceType')
     @date_today = @local_tzone_time.to_date
@@ -72,7 +73,8 @@ class AttendancesController < ApplicationController
     start_date = @today.beginning_of_month
     end_date = @today.end_of_month
     if @config.config_value == 'Daily'
-      @batch = Batch.find(params[:batch_id])
+      @batch = Batch.find(1)
+      # @batch = Batch.find(params[:batch_id])
       @students = Student.find_all_by_batch_id(@batch.id)
       #      @dates = ((@batch.end_date.to_date > @today.end_of_month) ? (@today.beginning_of_month..@today.end_of_month) : (@today.beginning_of_month..@batch.end_date.to_date))
       @dates=@batch.working_days(@today)
