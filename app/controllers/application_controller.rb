@@ -17,7 +17,8 @@
 #limitations under the License.
 
 class ApplicationController < ActionController::Base
-  protect_from_forgery
+  protect_from_forgery with: :exception
+  # protect_from_forgery
   helper :all
   helper_method :can_access_request?
 

@@ -32,28 +32,37 @@
   <div class="all-user">
     <div class="label-field-pair">
       <div class="text-input-bg">
-        <%= select :user_type, :type, [["#{t('admin')}","Admin"], ["#{t('employee_text')}","Employeees"],["#{t('student_text')}","Student"],["#{t('parent')}","Parent"]],
+        <%#= binding.pry %>
+        <%#= select :user_type, :type, [["#{t('admin')}","Admin"], ["#{t('employee_text')}","Employeees"],["#{t('student_text')}","Student"],["#{t('parent')}","Parent"]],
           {:prompt => "#{t('select_a_role')}"},
           {:onChange => 
-            "#{button_to(
+            raw("#{button_to(
+              :remote => true,
               :url => {:action => "list_user"},
               :with => "'user_type='+value",
               :before => "Element.show('loader')",
               :success => "Element.hide('loader')"
-            )}"
+            )}")
+          } %>
+        <%= select :user_type, :type, [["#{t('admin')}","Admin"], ["#{t('employee_text')}","Employeees"],["#{t('student_text')}","Student"],["#{t('parent')}","Parent"]],
+          {:prompt => "#{t('select_a_role')}"},
+          data: {
+            remote: true,
+            url: url_for(action: :list_user),
+            method: 'get'
           } %>
       </div>
-      <%= button_to(
-              :url => {:action => "list_user"},
-              :with => "'user_type='+value",
-              :before => "Element.show('loader')",
-              :success => "Element.hide('loader')"
-            ) %>
-      <%= image_tag("loader.gif",
+      <%#= button_to(
+          :url => {:action => "list_user"},
+          :with => "'user_type='+value",
+          :before => "Element.show('loader')",
+          :success => "Element.hide('loader')"
+        ) %>
+      <%= image_tag("profile.png",
         :align => "absmiddle",
         :border => 0,
         :id => "loader",
-        :style =>"display: none;" ) %>
+         ) %>
     </div>
     <div id="student_user"></div>
 

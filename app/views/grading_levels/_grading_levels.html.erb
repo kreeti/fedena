@@ -47,7 +47,9 @@ end %>
         <td class="col-2"><%= grade.description.present? ? grade.description : "-" %></td>
         <td class="col-1"><small><%= link_to(t('edit_text'),
               :url => edit_grading_level_path(grade), :method => 'get', remote: true ) %>
-            | <%= link_to(t('delete_text'),
+            |
+              <%= icon_delete_link(grading_level_path(grade)) %>
+              <%#= link_to(t('delete_text'),
               :url => grading_level_path(grade),
               :method => 'delete',
               :confirm => t('delete_confirm_msg'),

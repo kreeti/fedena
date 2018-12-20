@@ -6,9 +6,8 @@
 //= require jquery-ui
 
 //= require prototype
-//= require prototype_ujs
-//= require prototype_ujs.document
 //= require effects
+//= require prototype_ujs
 //= require dragdrop
 //= require controls
 
@@ -35,4 +34,10 @@ $jq(function (){
 	var format = 'yy-mm-dd';
 	dateInput.datepicker({dateFormat: format});
 	dateInput.datepicker('setDate', $jq.datepicker.parseDate(format, dateInput.val()));
+});
+
+$.ajaxSetup({
+  headers: {
+    'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+  }
 });

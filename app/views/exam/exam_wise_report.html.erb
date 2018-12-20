@@ -36,7 +36,7 @@
     <%= t('exam_wise_report') %>
   </div>
   <div class="box">
-    <% form_for :exam_report, :url=>{:action=>'generated_report'} do |x| %>
+    <%= form_for :exam_report, :url=>{:action=>'generated_report'} do |x| %>
 
       <div class="text-input-bg">
         <%= select :exam_report, :batch_id,
@@ -49,7 +49,7 @@
           )}"} %>
       </div>
 
-      <div  class="text-input-bg" id="exam-group-select">
+      <div class="text-input-bg" id="exam-group-select">
         <%= select :exam_report, :exam_group_id, @exam_groups.map{|exam| [exam.name,exam.id]},:prompt=> "#{t('select_exam_group')}" %>
       </div>
       <%= image_tag("loader.gif",

@@ -150,7 +150,7 @@ module ApplicationHelper
   end
 
   def render_generic_hook
-    hooks =  []
+    hooks = []
     FedenaPlugin::ADDITIONAL_LINKS[:generic_hook].compact.flatten.select{|h| h if (h[:source][:controller] == controller_name.to_s && h[:source][:action] == action_name.to_s)}.each do |hook|
       if can_access_request? hook[:destination][:action].to_sym,hook[:destination][:controller].to_sym
         h = Marshal.load(Marshal.dump(hook))
@@ -160,5 +160,9 @@ module ApplicationHelper
       end
     end
     return hooks.to_json
+  end
+
+  def icon_delete_link(path)
+    link_to content_tag(:span, t('delete_text')), path, method: :delete, data: { confirm: "Are you sure?" }
   end
 end

@@ -136,7 +136,7 @@ class ExamController < ApplicationController
           total = 0
           weightages.map{|w| total+=w.to_f}
           unless total=="100".to_f
-            flash[:notice]="#{t('flash9')}"
+            flash[:notice]="#{t('exam.flash9')}"
             return
           else
             GroupedExam.delete_all(:batch_id=>@batch.id)
@@ -149,7 +149,7 @@ class ExamController < ApplicationController
       else
         GroupedExam.delete_all(:batch_id=>@batch.id)
       end
-      flash[:notice]="#{t('flash1')}"
+      flash[:notice]="#{t('exam.flash1')}"
     end
   end
 
@@ -184,7 +184,7 @@ class ExamController < ApplicationController
         end
         flash[:notice]="Report generation in queue for batches #{@batches.collect(&:full_name).join(", ")}. <a href='/scheduled_jobs/Batch/2'>Click Here</a> to view the scheduled job."
       else
-        flash[:notice]="#{t('flash11')}"
+        flash[:notice]="#{t('exam.flash11')}"
         return
       end
     end
@@ -229,7 +229,7 @@ class ExamController < ApplicationController
         end
         flash[:notice]="Report generation in queue for batches #{@batches.collect(&:full_name).join(", ")}. <a href='/scheduled_jobs/Batch/1'>Click Here</a> to view the scheduled job."
       else
-        flash[:notice]="#{t('flash11')}"
+        flash[:notice]="#{t('exam.flash11')}"
         return
       end
     end
@@ -251,12 +251,12 @@ class ExamController < ApplicationController
   def generated_report
     if params[:student].nil?
       if params[:exam_report].nil? or params[:exam_report][:exam_group_id].empty?
-        flash[:notice] = "#{t('flash2')}"
+        flash[:notice] = "#{t('exam.flash2')}"
         redirect_to :action=>'exam_wise_report' and return
       end
     else
       if params[:exam_group].nil?
-        flash[:notice] = "#{t('flash3')}"
+        flash[:notice] = "#{t('exam.flash3')}"
         redirect_to :action=>'exam_wise_report' and return
       end
     end
@@ -357,7 +357,7 @@ class ExamController < ApplicationController
       @exam_groups = ExamGroup.find(:all,:conditions=>{:batch_id=>@batch.id})
       @exam_groups.reject!{|e| e.exam_type=="Grades"}
     else
-      flash[:notice] = "#{t('flash4')}"
+      flash[:notice] = "#{t('exam.flash4')}"
       redirect_to :action=>'subject_rank'
     end
   end
@@ -394,7 +394,7 @@ class ExamController < ApplicationController
       @students = @batch.students
       @exam_groups = ExamGroup.find(:all,:conditions=>{:batch_id=>@batch.id})
     else
-      flash[:notice] = "#{t('flash4')}"
+      flash[:notice] = "#{t('exam.flash4')}"
       redirect_to :action=>'subject_wise_report'
     end
   end
@@ -456,12 +456,12 @@ class ExamController < ApplicationController
 
   def student_course_rank
     if params[:course_rank].nil? or params[:course_rank][:course_id]==""
-      flash[:notice] = "#{t('flash13')}"
+      flash[:notice] = "#{t('exam.flash13')}"
       redirect_to :action=>'course_rank' and return
     else
       @course = Course.find(params[:course_rank][:course_id])
       if @course.has_batch_groups_with_active_batches and (!params[:course_rank][:batch_group_id].present? or params[:course_rank][:batch_group_id]=="")
-        flash[:notice] = "#{t('flash14')}"
+        flash[:notice] = "#{t('exam.flash14')}"
         redirect_to :action=>'course_rank' and return
       else
         if @course.has_batch_groups_with_active_batches
@@ -538,7 +538,7 @@ class ExamController < ApplicationController
       redirect_to :action=>'attendance_rank' and return
     else
       if params[:attendance_rank][:start_date].to_date > params[:attendance_rank][:end_date].to_date
-        flash[:notice] = "#{t('flash15')}"
+        flash[:notice] = "#{t('exam.flash15')}"
         redirect_to :action=>'attendance_rank' and return
       else
         @batch = Batch.find(params[:attendance_rank][:batch_id])
@@ -621,7 +621,7 @@ class ExamController < ApplicationController
 
   def student_ranking_level_report
     if params[:ranking_level_report].nil? or params[:ranking_level_report][:mode]==""
-      flash[:notice]="#{t('flash16')}"
+      flash[:notice]="#{t('exam.flash16')}"
       redirect_to :action=>"ranking_level_report" and return
     else
       @mode = params[:ranking_level_report][:mode]
@@ -632,17 +632,17 @@ class ExamController < ApplicationController
         else
           @batch = Batch.find(params[:ranking_level_report][:batch_id])
           if params[:ranking_level_report].nil? or params[:ranking_level_report][:ranking_level_id]==""
-            flash[:notice]="#{t('flash17')}"
+            flash[:notice]="#{t('exam.flash17')}"
             redirect_to :action=>"ranking_level_report" and return
           elsif params[:ranking_level_report][:report_type]==""
-            flash[:notice]="#{t('flash18')}"
+            flash[:notice]="#{t('exam.flash18')}"
             redirect_to :action=>"ranking_level_report" and return
           else
             @ranking_level = RankingLevel.find(params[:ranking_level_report][:ranking_level_id])
             @report_type = params[:ranking_level_report][:report_type]
             if params[:ranking_level_report][:report_type]=="subject"
               if params[:ranking_level_report][:subject_id]==""
-                flash[:notice]="#{t('flash4')}."
+                flash[:notice]="#{t('exam.flash4')}."
                 redirect_to :action=>"ranking_level_report" and return
               else
                 @students = @batch.students(:conditions=>{:is_active=>true,:is_deleted=>true})
@@ -655,7 +655,7 @@ class ExamController < ApplicationController
                     @scores.reject!{|s| !((s.marks < @ranking_level.marks if @ranking_level.marks_limit_type=="upper") or (s.marks >= @ranking_level.marks if @ranking_level.marks_limit_type=="lower") or (s.marks == @ranking_level.marks if @ranking_level.marks_limit_type=="exact"))}
                   end
                 else
-                  flash[:notice]="#{t('flash19')}"
+                  flash[:notice]="#{t('exam.flash19')}"
                   redirect_to :action=>"ranking_level_report" and return
                 end
               end
@@ -675,7 +675,7 @@ class ExamController < ApplicationController
                     @scores.reject!{|s| !((s.marks < @ranking_level.marks if @ranking_level.marks_limit_type=="upper") or (s.marks >= @ranking_level.marks if @ranking_level.marks_limit_type=="lower") or (s.marks == @ranking_level.marks if @ranking_level.marks_limit_type=="exact"))}
                   end
                 else
-                  flash[:notice]="#{t('flash19')}"
+                  flash[:notice]="#{t('exam.flash19')}"
                   redirect_to :action=>"ranking_level_report" and return
                 end
               else
@@ -702,7 +702,7 @@ class ExamController < ApplicationController
                     @scores.reject!{|s| !((s.marks < @ranking_level.marks if @ranking_level.marks_limit_type=="upper") or (s.marks >= @ranking_level.marks if @ranking_level.marks_limit_type=="lower") or (s.marks == @ranking_level.marks if @ranking_level.marks_limit_type=="exact"))}
                   end
                 else
-                  flash[:notice]="#{t('flash19')}"
+                  flash[:notice]="#{t('exam.flash19')}"
                   redirect_to :action=>"ranking_level_report" and return
                 end
               end
@@ -711,15 +711,15 @@ class ExamController < ApplicationController
         end
       else
         if params[:ranking_level_report][:course_id]==""
-          flash[:notice]="#{t('flash13')}"
+          flash[:notice]="#{t('exam.flash13')}"
           redirect_to :action=>"ranking_level_report" and return
         else
           @course = Course.find(params[:ranking_level_report][:course_id])
           if @course.has_batch_groups_with_active_batches and (!params[:ranking_level_report][:batch_group_id].present? or params[:ranking_level_report][:batch_group_id]=="")
-            flash[:notice]="#{t('flash14')}"
+            flash[:notice]="#{t('exam.flash14')}"
             redirect_to :action=>"ranking_level_report" and return
           elsif params[:ranking_level_report].nil? or params[:ranking_level_report][:ranking_level_id]==""
-            flash[:notice]="#{t('flash17')}"
+            flash[:notice]="#{t('exam.flash17')}"
             redirect_to :action=>"ranking_level_report" and return
           else
             @ranking_level = RankingLevel.find(params[:ranking_level_report][:ranking_level_id])
@@ -759,7 +759,7 @@ class ExamController < ApplicationController
                 @scores.reject!{|s| !(((s.marks >= @ranking_level.gpa unless @ranking_level.gpa.nil?) if s.student.batch.gpa_enabled?) or (s.marks >= @ranking_level.marks unless @ranking_level.marks.nil?))}
               end
             else
-              flash[:notice]="#{t('flash20')}"
+              flash[:notice]="#{t('exam.flash20')}"
               redirect_to :action=>"ranking_level_report" and return
             end
           end
@@ -867,7 +867,7 @@ class ExamController < ApplicationController
 
   def student_transcript
     if params[:transcript].nil? or params[:transcript][:student_id]==""
-      flash[:notice] = "#{t('flash21')}"
+      flash[:notice] = "#{t('exam.flash21')}"
       redirect_to :action=>"transcript" and return
     else
       @batch = Batch.find(params[:transcript][:batch_id])
@@ -952,7 +952,7 @@ class ExamController < ApplicationController
 
   def student_combined_report
     if params[:combined_report][:batch_id]=="" or (params[:combined_report][:designation_ids].blank? and params[:combined_report][:level_ids].blank?)
-      flash[:notice] = "#{t('flash22')}"
+      flash[:notice] = "#{t('exam.flash22')}"
       redirect_to :action=>"combined_report" and return
     else
       @batch = Batch.find(params[:combined_report][:batch_id])
@@ -1033,7 +1033,7 @@ class ExamController < ApplicationController
       @students=@batch.students.by_first_name
       @student = @students.first  unless @students.empty?
       if @student.blank?
-        flash[:notice] = "#{t('flash5')}"
+        flash[:notice] = "#{t('exam.flash5')}"
         redirect_to :action=>'grouped_exam_report' and return
       end
       if @type == 'grouped'
@@ -1312,7 +1312,7 @@ class ExamController < ApplicationController
               PreviousExamScore.create(:student_id=>prev_score.student_id,:exam_id=>prev_score.exam_id,:marks=>prev_score.marks,:grading_level_id=>prev_score.grading_level_id,:remarks=>prev_score.remarks,:is_failed=>prev_score.is_failed)
             end
           else
-            flash[:warn_notice] = "#{t('flash8')}"
+            flash[:warn_notice] = "#{t('exam.flash8')}"
             @error = nil
           end
         else
@@ -1333,8 +1333,8 @@ class ExamController < ApplicationController
         end
       end
     end
-    flash[:notice] = "#{t('flash6')}" if @error == true
-    flash[:notice] = "#{t('flash7')}" if @error == false
+    flash[:notice] = "#{t('exam.flash6')}" if @error == true
+    flash[:notice] = "#{t('exam.flash7')}" if @error == false
     redirect_to :controller=>"exam", :action=>"edit_previous_marks", :exam_id=>@exam.id
   end
 

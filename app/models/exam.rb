@@ -58,11 +58,6 @@ class Exam < ActiveRecord::Base
     end
   end
 
-  def before_save
-    self.weightage = 0 if self.weightage.nil?
-    #update_exam_group_date
-  end
-
   def after_create
     create_exam_event
   end
@@ -90,6 +85,7 @@ class Exam < ActiveRecord::Base
 
   private
   def update_exam_group_date
+    self.weightage = 0 if self.weightage.nil?
     group = self.exam_group
     group.update_attribute(:exam_date, self.start_time.to_date) if !group.exam_date.nil? and self.start_time.to_date < group.exam_date
   end

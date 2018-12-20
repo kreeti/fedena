@@ -38,7 +38,9 @@ class User < ActiveRecord::Base
   scope :active, :conditions => { :is_deleted => false }
   scope :inactive, :conditions => { :is_deleted => true }
 
-  def before_save
+  before_save :before_save_func
+
+  def before_save_func
     self.salt = random_string(8) if self.salt == nil
     self.hashed_password = Digest::SHA1.hexdigest(self.salt + self.password) unless self.password.nil?
     if self.new_record?
@@ -69,7 +71,7 @@ class User < ActiveRecord::Base
 
   def self.authenticate?(username, password)
     u = User.find_by_username username
-    # u.hashed_password == Digest::SHA1.hexdigest(u.salt + password)
+    u.hashed_password == Digest::SHA1.hexdigest(u.salt + password)
   end
 
   def random_string(len)

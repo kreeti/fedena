@@ -32,12 +32,14 @@ class ExamGroup < ActiveRecord::Base
   validates_associated :exams
 
   validates_uniqueness_of :cce_exam_category_id, :scope=>:batch_id, :message=>"already assigned for another Exam Group",:unless => lambda { |e| e.cce_exam_category_id.nil?}
-  
+
+  before_save :before_save_func
+
   def removable?
     self.exams.reject{|e| e.removable?}.empty?
   end
 
-  def before_save
+  def before_save_func
     self.exam_date = self.exam_date || Date.today 
   end
 

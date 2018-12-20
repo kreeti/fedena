@@ -25,9 +25,9 @@ class RankingLevelsController < ApplicationController
   end
 
   def index
-    #@courses = Course.active
-    #@ranking_levels = RankingLevel.all(:order=> "priority ASC")
-    #@ranking_level = RankingLevel.new
+    @courses = Course.active
+    @ranking_levels = RankingLevel.all(:order=> "priority ASC")
+    @ranking_level = RankingLevel.new
   end
 
   def load_ranking_levels

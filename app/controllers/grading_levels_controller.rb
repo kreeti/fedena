@@ -22,6 +22,7 @@ class GradingLevelsController < ApplicationController
   def index
     @batches = Batch.active
     @grading_levels = GradingLevel.default
+    binding.pry
   end
 
   def new
@@ -97,6 +98,7 @@ class GradingLevelsController < ApplicationController
     unless @grading_level.batch.nil?
       @batch = @grading_level.batch
     end
+    redirect_to grading_levels_path
   end
 
   def show
